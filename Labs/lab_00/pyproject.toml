@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "lab-00"
+version = "0.1.0"
+description = ""
+authors = ["SamuelePino <samuelepino99@gmail.com>"]
+readme = "README.md"
+packages = [{include = "lab_00"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = "^1.23.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

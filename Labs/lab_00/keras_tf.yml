@@ -1,0 +1,11 @@
+name: keras_tf
+channels:
+  - defaults
+dependencies:
+  - cudatoolkit=10.1
+  - cudnn=7.6.5
+  - tensorflow-gpu=2.1
+  - tensorflow-estimator=2.1
+  - python=3.7
+  - scikit-learn
+  - matplotlib
