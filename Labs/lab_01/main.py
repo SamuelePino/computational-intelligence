@@ -8,7 +8,7 @@ def problem(N:int, seed:int=None) -> list:
         list(set(random.randint(0, N - 1) for n in range(random.randint(N // 5, N // 2))))
         for n in range(random.randint(N, N * 5))
     ]
-
+#TODO implementare DOC nelle function e Fare README
 def check_solution(N:int, solution:list[list]) -> bool:
 
     # A table where the index represents the corresponding number, and the content is a bool
