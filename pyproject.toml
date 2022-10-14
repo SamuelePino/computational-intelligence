@@ -1,14 +1,13 @@
 [tool.poetry]
-name = "lab-00"
+name = "ci-labs-pkg"
 version = "0.1.0"
-description = ""
+description = "List of Packages used in my labs, during Computational Intelligence course"
 authors = ["SamuelePino <samuelepino99@gmail.com>"]
 readme = "README.md"
-packages = [{include = "lab_00"}]
+packages = [{include = "ci_labs_pkg"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-numpy = "^1.23.3"
 
 
 [build-system]
