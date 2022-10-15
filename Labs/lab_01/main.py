@@ -1,6 +1,7 @@
 
 import random
 from itertools import combinations 
+import time
 
 def problem(N:int, seed:int=None) -> list:
     random.seed(seed)
@@ -43,15 +44,17 @@ def check_solution(N:int, solution:list[list]) -> bool:
 
     return   all(check_table)
 
-def solve(N:int, problem:list[list]) -> list[list]:
+def solve(N:int, problem:list[list], sort = False, reverse= False) -> list[list]:
 
     s = []
     dim = 0
     solution_found = False
     iterations = 0
+    #Interessante vedere che se ordino per lunghezza inversa ho una soluzione diversa e trovata prima
+    
+    if sort : problem.sort(key= lambda x: len(x), reverse= reverse) 
 
     for n in range(0, len(problem)):  
-
         if solution_found:
             break  
 
@@ -70,24 +73,37 @@ def solve(N:int, problem:list[list]) -> list[list]:
     #print(s)
     #print(f"check: {check_solution(N, solution=s)}")
     if check_solution(N, solution=s):
-        print(f"Found solution in {iterations} steps: {s}")
+        print(f"Found solution in {iterations} steps: \n{s}\nSorted: {sort}\nReverse:{reverse}")
         
     else:
         print("No solution found")
     return s
 
+
+
 # Is the range in which we generate integers => (0, N)
-N = 10  
+N = 20  
 
 p = problem(N, seed=42)
-print(f"problem:\n {p}\n")
-p.sort(key= lambda x: len(x))
-print(f"sorted problem:\n {p}")
+#print(f"problem:\n {p}\n")
+#p.sort(key= lambda x: len(x))
+#print(f"sorted problem:\n {p}")
 
 s: list[list] = []
-s = solve(N,problem=p)
 
+st = time.time()
+s = solve(N, problem=p, sort= False, reverse = True)
+et = time.time()
+
+sum = 0
+
+for list_ in s:
+    sum += len(list_)
+
+
+print(f"Elapsed Time:  {et-st:2f}s\nNumber: {sum}\nNum lists: {len(s)}")
 #print(s)
+
 """
 test_solution = [[0, 3], [1,1], [0,2] ]
 res = check_solution(N, solution= test_solution)
