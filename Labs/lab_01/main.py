@@ -101,7 +101,7 @@ for list_ in s:
     sum += len(list_)
 
 
-print(f"Elapsed Time:  {et-st:2f}s\nNumber: {sum}\nNum lists: {len(s)}")
+print(f"Elapsed Time:  {et-st:2f}s\nNumber:  {sum}\nNum lists: {len(s)}")
 #print(s)
 
 """
