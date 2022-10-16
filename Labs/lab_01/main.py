@@ -1,112 +1,130 @@
-
+from operator import index
 import random
-from itertools import combinations 
-import time
+import sys
+from time import time
+import numpy as np
+import logging
 
-def problem(N:int, seed:int=None) -> list:
+N_total = [5, 10, 20, 100, 500, 1000]
+
+def problem(N, seed=42):
     random.seed(seed)
     return [
         list(set(random.randint(0, N - 1) for n in range(random.randint(N // 5, N // 2))))
         for n in range(random.randint(N, N * 5))
     ]
-#TODO implementare DOC nelle function e Fare README
-def check_solution(N:int, solution:list[list]) -> bool:
 
-    # A table where the index represents the corresponding number, and the content is a bool
-    check_table: list= list(False for i in range(0,N))
+class State():
+    """Class for states in A* alghoritm"""
 
-    #print("check table init:")
-    #print(check_table)
+    def __init__(self, state, number_found, g, h, remaining_list = []):
+        self.g = g;
+        self.h = h;
+        self.f = g + h;
 
-    # flag to trigger the first if and leave the loop if a solution has been found
-    solution_found  = False
+        self.remaining_list = remaining_list
+        self.state = state
+        self.number_found = number_found
 
-    # for each list of the proposed solution
-    for my_list in solution:
+def preprocessing(list_of_lists):
 
-        if solution_found:
-            break
+    list_of_lists =  sorted(list_of_lists, key = lambda l : len(l))
 
-        # check for each value we need to search (numbers in 0-N) if it is in this list
-        for n in range(0,N):
+    return list_of_lists
 
-            # check: if the checkTable is all True, the solution works
-            # we can exit through a 'break'
-            if all(check_table):
-                solution_found = True
-                break
-            #print(f"current n: {n}\ncurrent my_list: {my_list}")
-
-            # Otherwise we check if the n-th number is in this list
-            if n in my_list:
-
-                check_table[n] = True
-
-    return   all(check_table)
-
-def solve(N:int, problem:list[list], sort = False, reverse= False) -> list[list]:
-
-    s = []
-    dim = 0
-    solution_found = False
-    iterations = 0
-    #Interessante vedere che se ordino per lunghezza inversa ho una soluzione diversa e trovata prima
+def greedy_best_first(N):
+    goal = set(range(N))
+    solution = []
+    start_problem = preprocessing(problem(N))
     
-    if sort : problem.sort(key= lambda x: len(x), reverse= reverse) 
+    number_found = set()
+    n_of_visited_nodes = 0
+    
+    while goal > number_found:
+        n_of_visited_nodes+=1    
+        element = start_problem.pop(0)
+        if set(element) | number_found > number_found: 
+            number_found = set(element) | number_found
+            solution.append(element)
+    
+    print(f"\nSolution using Greedy Best-First algotithm with N = {N} =>\n\t W = {sum(len(element) for element in solution)} \n\t N of VISITED NODES = {n_of_visited_nodes}")
+    print(f"Solution {solution}")
 
-    for n in range(0, len(problem)):  
-        if solution_found:
-            break  
+#Actual Cost
+def g(solution, el):
+    return sum(len(element) for element in solution) + len(el)
 
-        dim = dim+1
-        combs = list(combinations(problem, dim))
-        for comb in combs:
-            iterations += 1
-            if check_solution(N, solution=comb):
-                #print(f"check: {check_solution(N, solution=comb)}")
-                #print(comb)
-                solution_found = True
-                s = comb
-                break
-        #print(f"For DIM: {dim} we've got: {comb}")
+#Euristic Cost
+def h(N, el, number_found):
+    return (N - (len(set(el)| number_found)))
 
-    #print(s)
-    #print(f"check: {check_solution(N, solution=s)}")
-    if check_solution(N, solution=s):
-        print(f"Found solution in {iterations} steps: \n{s}\nSorted: {sort}\nReverse:{reverse}")
+def a_star(N):
+
+    n_of_visited_nodes = 0
+    start_problem = problem(N)
+    goal = set(range(N))
+    state_list = []
+
+    open_states = []
+    
+    for ind, element in enumerate(start_problem):
+        n_of_visited_nodes += 1
+        state_list.append(element)
+        temp_state = State(state_list, set(element) ,g(state_list, element), h(N,element,set(element)))
+        open_states.append(temp_state)
+        state_list = []
+    
+
+    while True:
+    
+        ind = 0
+        current_state = open_states[ind]
+
+        for indice, open_state in enumerate(open_states):
+
+            if open_state.f < current_state.f:
+                current_state = open_state
+                ind = indice
         
-    else:
-        print("No solution found")
-    return s
+        open_states.pop(ind)
+    
+        number_found = current_state.number_found      
 
+        if number_found >= goal:
+            print("solution :", current_state.state)
+            print("W: ", sum(len(element) for element in current_state.state))
+            return
 
+        curr_state = current_state.state
+        for element in start_problem:
 
-# Is the range in which we generate integers => (0, N)
-N = 20  
+            
+            #Needed to not have duplicates
+            if element not in current_state.state:
+                n_of_visited_nodes += 1
+                state_list = curr_state.copy()
+                state_list.append(element)
+                number_found = set(element) | current_state.number_found
 
-p = problem(N, seed=42)
-#print(f"problem:\n {p}\n")
-#p.sort(key= lambda x: len(x))
-#print(f"sorted problem:\n {p}")
+                temp_state = State(state_list, number_found ,g(state_list, element), h(N, element, number_found))
+                
+                if temp_state.number_found >= goal:
+                    print(f"\nSolution using A* algotithm with N = {N} =>\n\t W = {sum(len(element) for element in temp_state.state)} \n\t N of VISITED NODES = {n_of_visited_nodes}")
+                    print(f"Solution {temp_state.state}")
+                    return
 
-s: list[list] = []
+                open_states.append(temp_state)
 
-st = time.time()
-s = solve(N, problem=p, sort= False, reverse = True)
-et = time.time()
+if __name__ == "__main__":
 
-sum = 0
+    for n in N_total:
+        st = time()
+        greedy_best_first(n)
+        et = time()
+        print(f"Elapsed Time = {et-st}seconds")
 
-for list_ in s:
-    sum += len(list_)
-
-
-print(f"Elapsed Time:  {et-st:2f}s\nNumber:  {sum}\nNum lists: {len(s)}")
-#print(s)
-
-"""
-test_solution = [[0, 3], [1,1], [0,2] ]
-res = check_solution(N, solution= test_solution)
-
-print(f"TEST Result is:  {res}")
-"""
+    for n in N_total:
+        st = time()
+        a_star(n)
+        et = time()
+        print(f"Elapsed Time = {et-st}seconds")
