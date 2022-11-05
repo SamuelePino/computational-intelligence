@@ -9,7 +9,7 @@ This lab aims to solve the **_Set Covering_** problem using `Genetic algorithms`
 ## Structure:
 
 * Gene: in this solution is represented as an index which corresponds to a specific list of the problem.
-* Genome: it is a list of genes (indexes of the problem) with a specific lenght given by the parameter GENOME_LENGTH.
+* Genome: it is a list of genes (indexes of the problem) with a specific length given by the parameter GENOME_LENGTH.
 * Individual (IND): it is a `Tuple` containing a Genome and its fitness value.
 * Population: it is a list containing a fixed number of individuals.
 
@@ -48,28 +48,28 @@ If the genome leads to an unacceptable solution (it does not contain all integer
 Otherwise it returns the count of integers present in the whole IND's genome, but negative in order to simplify sorting.
 
 
-The aim is to minimize, or better maximize (given that the fitness score are negative), the results of the fitness function.
+The aim is to minimize, or better maximize (given that fitness scores are negative), the results of the FF.
 
 
 ## Implementation of the Null Set
 This idea allows an IND to mutate its genes avoiding to choose a list from problem, but choosing instead a void one. 
 This strongly compensates the decision of using a fixed-length genome, which is useful for Recombination/Mating of INDs.
 
-It is implemented as additional index at the end of the problem. 
+It is implemented as a special additional index at the end of the problem. 
 
 --------
 ## Offspring Generation
 The main idea is to:
   1) select a specific part of the population given a p percentage, as the 'top';
 
-  2) save these top INDs unmutated (added in the offspring during the matin);
+  2) save these top INDs unmutated (added in the offspring during the mating);
 
-  3) let these top INDs have a mating session at random couple (then extracted), 
+  3) let these top INDs have a mating session at random couple, 
      where their direct offspring genome is obtained as a part of the genome of 
      parent 1 and the other part from parent 2. 
 
   4) the 'child' is then mutated and added to the offspring list, together with both its parents.    
-    NB: parents are extracted from the top_pop list, and added to the offspring.
+    NB: parents are extracted from the top_pop list, and added to the offspring after mating.
 
   
     RECAP:
@@ -100,7 +100,7 @@ For several runs we tested the algorithm with the following combinations of para
 
 _NB: POP_SIZE and OFF_SIZE are always fixed to 400 and 200 respectively_
 
-### For `N=50` for 20 runs each
+### For `N=50`: 20 runs each
 
     |N: 50 - GL: 13  - NG: 500  | N: 50 - GL: 16  - NG: 500  | N: 50 - GL: 25 - NG: 500  |
     |---------------------------|----------------------------|----------------------------|   
@@ -123,7 +123,7 @@ At first we can notice that a small GL and a big NG leads to better overall perf
 With bigger GLs we usually have an higher ET, AVG BLOAT and AVG COST, due to the fact each IND has more genes.
 
 
-### For `N=500` for 10 runs each
+### For `N=500`: 10 runs each
 Due to its dimension we only tested 10 runs for each combinations, for time reasons:
                                         
     |N: 500 - GL: 13  - NG: 500  | N: 500 - GL: 16  - NG: 500  | N: 500 - GL: 25  - NG: 500  |
@@ -141,9 +141,10 @@ Due to its dimension we only tested 10 runs for each combinations, for time reas
         AVG BLOAT:  302.74          AVG BLOAT:  309.14           AVG BLOAT:  317.3
         AVG COST:  1513.7           AVG COST:  1545.7            AVG COST:  1586.5              
                                          
-    _The code used to test the algorithm is at the bottom of the file in the Appendice_
+  [_The code used to test the algorithm is at the bottom of the file in the Appendix_]
 
- _**(Work In Progress)**_
+## Best Solution for N= 5-1000  _**(WIP)**_
+
 [This are minimum found tuning properly the algorithm]
 
 | N | W(Cost) | Bloat | Population Size | Offspring size| Elapsed Time| GL| NG |
