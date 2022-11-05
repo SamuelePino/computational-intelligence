@@ -23,7 +23,7 @@ The problem is then transformed in a list of sets.
 Then we use a `coverage table` which is a dictionary, used to faster translate indexes in the corresponding list. Really useful for Integers Coverage Check (ICC) in the solution/genome.
 
 
-## Fitness Function:
+## Fitness Function (FF):
 
 The fitness function is defined as follows:
 
