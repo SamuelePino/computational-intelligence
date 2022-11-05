@@ -55,6 +55,8 @@ The aim is to minimize, or better maximize (given that the fitness score are neg
 This idea allows an IND to mutate its genes avoiding to choose a list from problem, but choosing instead a void one. 
 This strongly compensates the decision of using a fixed-length genome, which is useful for Recombination/Mating of INDs.
 
+It is implemented as additional index at the end of the problem. 
+
 --------
 ## Offspring Generation
 The main idea is to:
