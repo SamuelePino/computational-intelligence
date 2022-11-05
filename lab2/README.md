@@ -143,10 +143,9 @@ Due to its dimension we only tested 10 runs for each combinations, for time reas
                                          
     _The code used to test the algorithm is at the bottom of the file in the Appendice_
 
- 
+ _**(Work In Progress)**_
 [This are minimum found tuning properly the algorithm]
 
-(Work In Progress)
 | N | W(Cost) | Bloat | Population Size | Offspring size| Elapsed Time| GL| NG |
 | --| ------- | -------- |------------- | ----------- |  ----------- | ---|----|
 |5 | 5 | 100% | 200 |160 | 0.0086 s | 4|   10 |
@@ -167,20 +166,21 @@ The experimental results show that the algorithm can find reasonable results by 
 
 Tuning the various parameter is crucial for the efficiency and quality of the foundd solution. 
 
-In this implementation we only test a single FF, and genes are indexes, which then need to be translated to check acceptability for each genome generated. The FF is not particulary efficient, so further work can be done there.
+In this implementation we only test a single FF where genes are indexes; they need to be translated to check acceptability (ICC) for each genome generated. This specific FF is not particulary efficient, so further work may be done on it.
 
-We can observe from experiments that this algorithm scales quite terribly with growing N, but the quality of the solution can be satisfying.
+We can observe from experiments that this algorithm scales quite badly with growing N, but the quality of the solution can be satisfying.
 We do not try an implementation of a Tournament, but only an Elitarism with recombination and mutation between the top.
 
 # Authors
 
-This code has been developed after discussing it with [Marco Pratticò 294815](https://github.com/marcopra). However, our code is different.
+This code has been developed after discussing it with [Marco Pratticò 294815](https://github.com/marcopra). However, our approach and code is different.
 
-# Appendice: Code for Tests
+# Appendix: Code for Tests
 
 The code used to test the algorithm is a modification of the last cell:
+
 ```python
-#@title Population Creation
+#@title Population Creation [Test Version]
 from time import time
 
 ET_array_store = []
@@ -220,36 +220,24 @@ for i in range(0, NUM_RUN):
         print(f"Population extinted at gen: {gen-1} with best: {population[0].fitness_score}")
         extinted = True
         break
-
+        
     population = offspring
-
+    
     best_score = population[0].fitness
-    best_for_gen.append(best_score)
 
   if not extinted:
-      #import matplotlib.pyplot as plt
-
-      #plt.plot(range(0,len(best_for_gen)-1), best_for_gen[1:])
-      #plt.show()
-
+  
       et  = time()
 
       elapsed_time = et - st
       best =  population[0]
       cost = -best.fitness[0]
       bloat = cost/N *100
-      #print("Winner: \n", best)
-      #print("Cost: ", cost)
-      #print("Bloat= ", bloat, "%")
-      #print(f"Elapsed time: {elapsed_time}s")
-
-      #print("N: ", N)
-      #print("GL: ", GENOME_LENGTH)
-      #print("NG: ", NUM_GEN)
-
+  
       ET_array_store.append(elapsed_time)
       BLOAT_Store.append(bloat)
       cost_store.append(cost)
+      
 print(f"MIN: {min(cost_store)}   MAX:{max(cost_store)}")
 print("AVG ET: ", sum(ET_array_store)/len(ET_array_store))
 print("AVG BLOAT: ", sum(BLOAT_Store)/len(BLOAT_Store))
