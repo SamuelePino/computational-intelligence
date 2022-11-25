@@ -9,7 +9,7 @@ This lab aims to solve the **_Set Covering_** problem using `Genetic algorithms`
 ## Structure:
 
 * Gene: in this solution is represented as an index which corresponds to a specific list of the problem.
-* Genome: it is a list of genes (indexes of the problem) with a specific lenght given by the parameter GENOME_LENGTH.
+* Genome: it is a list of genes (indexes of the problem) with a specific length given by the parameter GENOME_LENGTH.
 * Individual (IND): it is a `Tuple` containing a Genome and its fitness value.
 * Population: it is a list containing a fixed number of individuals.
 
@@ -23,7 +23,7 @@ The problem is then transformed in a list of sets.
 Then we use a `coverage table` which is a dictionary, used to faster translate indexes in the corresponding list. Really useful for Integers Coverage Check (ICC) in the solution/genome.
 
 
-## Fitness Function:
+## Fitness Function (FF):
 
 The fitness function is defined as follows:
 
@@ -48,26 +48,28 @@ If the genome leads to an unacceptable solution (it does not contain all integer
 Otherwise it returns the count of integers present in the whole IND's genome, but negative in order to simplify sorting.
 
 
-The aim is to minimize, or better maximize (given that the fitness score are negative), the results of the fitness function.
+The aim is to minimize, or better maximize (given that fitness scores are negative), the results of the FF.
 
 
 ## Implementation of the Null Set
 This idea allows an IND to mutate its genes avoiding to choose a list from problem, but choosing instead a void one. 
 This strongly compensates the decision of using a fixed-length genome, which is useful for Recombination/Mating of INDs.
 
+It is implemented as a special additional index at the end of the problem. 
+
 --------
 ## Offspring Generation
 The main idea is to:
   1) select a specific part of the population given a p percentage, as the 'top';
 
-  2) save these top INDs unmutated (added in the offspring during the matin);
+  2) save these top INDs unmutated (added in the offspring during the mating);
 
-  3) let these top INDs have a mating session at random couple (then extracted), 
+  3) let these top INDs have a mating session at random couple, 
      where their direct offspring genome is obtained as a part of the genome of 
      parent 1 and the other part from parent 2. 
 
   4) the 'child' is then mutated and added to the offspring list, together with both its parents.    
-    NB: parents are extracted from the top_pop list, and added to the offspring.
+    NB: parents are extracted from the top_pop list, and added to the offspring after mating.
 
   
     RECAP:
@@ -98,7 +100,7 @@ For several runs we tested the algorithm with the following combinations of para
 
 _NB: POP_SIZE and OFF_SIZE are always fixed to 400 and 200 respectively_
 
-### For `N=50` for 20 runs each
+### For `N=50`: 20 runs each
 
     |N: 50 - GL: 13  - NG: 500  | N: 50 - GL: 16  - NG: 500  | N: 50 - GL: 25 - NG: 500  |
     |---------------------------|----------------------------|----------------------------|   
@@ -121,7 +123,7 @@ At first we can notice that a small GL and a big NG leads to better overall perf
 With bigger GLs we usually have an higher ET, AVG BLOAT and AVG COST, due to the fact each IND has more genes.
 
 
-### For `N=500` for 10 runs each
+### For `N=500`: 10 runs each
 Due to its dimension we only tested 10 runs for each combinations, for time reasons:
                                         
     |N: 500 - GL: 13  - NG: 500  | N: 500 - GL: 16  - NG: 500  | N: 500 - GL: 25  - NG: 500  |
@@ -139,12 +141,12 @@ Due to its dimension we only tested 10 runs for each combinations, for time reas
         AVG BLOAT:  302.74          AVG BLOAT:  309.14           AVG BLOAT:  317.3
         AVG COST:  1513.7           AVG COST:  1545.7            AVG COST:  1586.5              
                                          
-    _The code used to test the algorithm is at the bottom of the file in the Appendice_
+  [_The code used to test the algorithm is at the bottom of the file in the Appendix_]
 
- 
+## Best Solution for N= 5-1000  _**(WIP)**_
+
 [This are minimum found tuning properly the algorithm]
 
-(Work In Progress)
 | N | W(Cost) | Bloat | Population Size | Offspring size| Elapsed Time| GL| NG |
 | --| ------- | -------- |------------- | ----------- |  ----------- | ---|----|
 |5 | 5 | 100% | 200 |160 | 0.0086 s | 4|   10 |
@@ -165,20 +167,21 @@ The experimental results show that the algorithm can find reasonable results by 
 
 Tuning the various parameter is crucial for the efficiency and quality of the foundd solution. 
 
-In this implementation we only test a single FF, and genes are indexes, which then need to be translated to check acceptability for each genome generated. The FF is not particulary efficient, so further work can be done there.
+In this implementation we only test a single FF where genes are indexes; they need to be translated to check acceptability (ICC) for each genome generated. This specific FF is not particulary efficient, so further work may be done on it.
 
-We can observe from experiments that this algorithm scales quite terribly with growing N, but the quality of the solution can be satisfying.
+We can observe from experiments that this algorithm scales quite badly with growing N, but the quality of the solution can be satisfying.
 We do not try an implementation of a Tournament, but only an Elitarism with recombination and mutation between the top.
 
 # Authors
 
-This code has been developed after discussing it with [Marco Pratticò 294815](https://github.com/marcopra). However, our code is different.
+This code has been developed after discussing it with [Marco Pratticò 294815](https://github.com/marcopra). However, our approach and code is different.
 
-# Appendice: Code for Tests
+# Appendix: Code for Tests
 
 The code used to test the algorithm is a modification of the last cell:
+
 ```python
-#@title Population Creation
+#@title Population Creation [Test Version]
 from time import time
 
 ET_array_store = []
@@ -218,36 +221,24 @@ for i in range(0, NUM_RUN):
         print(f"Population extinted at gen: {gen-1} with best: {population[0].fitness_score}")
         extinted = True
         break
-
+        
     population = offspring
-
+    
     best_score = population[0].fitness
-    best_for_gen.append(best_score)
 
   if not extinted:
-      #import matplotlib.pyplot as plt
-
-      #plt.plot(range(0,len(best_for_gen)-1), best_for_gen[1:])
-      #plt.show()
-
+  
       et  = time()
 
       elapsed_time = et - st
       best =  population[0]
       cost = -best.fitness[0]
       bloat = cost/N *100
-      #print("Winner: \n", best)
-      #print("Cost: ", cost)
-      #print("Bloat= ", bloat, "%")
-      #print(f"Elapsed time: {elapsed_time}s")
-
-      #print("N: ", N)
-      #print("GL: ", GENOME_LENGTH)
-      #print("NG: ", NUM_GEN)
-
+  
       ET_array_store.append(elapsed_time)
       BLOAT_Store.append(bloat)
       cost_store.append(cost)
+      
 print(f"MIN: {min(cost_store)}   MAX:{max(cost_store)}")
 print("AVG ET: ", sum(ET_array_store)/len(ET_array_store))
 print("AVG BLOAT: ", sum(BLOAT_Store)/len(BLOAT_Store))
