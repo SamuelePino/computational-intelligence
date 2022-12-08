@@ -33,7 +33,8 @@ Fitness Score, was evaluated using the `evaluation` function against the agent f
 Mutation was a slight modification in the probabilities vector of the genome. The modification occurred mantaining the distribution property of Sum 1.
 
 
-The strategy consisted in taking the best IND 
+The strategy consisted in taking the best IND (after selection through a tournament + elitism) and use its discrete distribution to choose at each turn a strategy for choosing both the row and the amount of objects to remove.
+
 # Method:
 
 
