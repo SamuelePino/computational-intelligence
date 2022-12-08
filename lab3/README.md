@@ -35,6 +35,10 @@ Mutation was a slight modification in the probabilities vector of the genome. Th
 
 The strategy consisted in taking the best IND (after selection through a tournament + elitism) and use its discrete distribution to choose at each turn a strategy for choosing both the row and the amount of objects to remove.
 
+## Task 3
+
+
+
 # Method:
 
 
