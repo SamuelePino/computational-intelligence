@@ -2,7 +2,6 @@ import numpy as np
 
 ACTIONS = {'U': (-1, 0), 'D': (1, 0), 'L': (0, -1), 'R': (0, 1)}
 
-
 class Agent(object):
     def __init__(self, states, alpha=0.15, random_factor=0.2):  # 80% explore, 20% exploit
         self.state_history = [((0, 0), 0)]  # state, reward
@@ -12,10 +11,18 @@ class Agent(object):
         self.init_reward(states)
 
     def init_reward(self, states):
-        for i, row in enumerate(states):
+        """for i, row in enumerate(states):
             for j, col in enumerate(row):
                 self.G[(j, i)] = np.random.uniform(low=1.0, high=0.1)
-
+        """
+        for row in states:
+            nobj_list = states[row]
+            for nobj in nobj_list:
+                self.G[(row, nobj)] = np.random.uniform(low=1.0, high=0.1)
+            
+        print(self.G)
+                
+        
     def choose_action(self, state, allowedMoves):
         maxG = -10e15
         next_move = None

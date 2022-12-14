@@ -36,27 +36,20 @@ Mutation was a slight modification in the probabilities vector of the genome. Th
 The strategy consisted in taking the best IND (after selection through a tournament + elitism) and use its discrete distribution to choose at each turn a strategy for choosing both the row and the amount of objects to remove.
 
 ## Task 3
+Not implemented yet, I focused on RL Agent ...
 
+## Task 4
+I implemented RL Agent using a specific `state-possible_action` dictionary of a dictionary. For each state seen by the agent, a relative `possible_action` list (implemented as a dictionary) was saved. For each of these actions, a g score was saved. The g is the expected value of that action in that state.
 
+The Agent check at it each turn the state of the Nim table (the tuple of rows), and use it to understand if that state was already seen or not. If the state is new, the agent initialize a new "g distribution" for that state and its possible_action list, otherwise the Agent tries playing by choosing the action for that state with max g value.
 
-# Method:
+The random factor is kept at 20% as from the Maze file...
 
+The learn function simply increase or decrease the g value of the take action, using the reward obtained at the end of each match (1 for wins and -1 for defeats).
 
-# Experimental results
+## Problems [WIP]
+There may be some bugs in the learn function or in the training loop and in the play loop, because the Agent sometimes wins 9500-500 against my `fast` strategy, other timese is a 5000-5000, other times 500-9500. 
 
+I tried some different inits but it seems to be useless.
 
-# Conclusions
-
-
-
-# Authors
-
-This code has been developed after discussing it with [Marco Pratticò 294815](https://github.com/marcopra). However, our approach and code is different.
-
-# Appendix: Code for Tests
-
-
-```python
-#@title Population Creation [Test Version]
-f
-```
+In the play loop the Agent Always loses, and I cannot undestand why
